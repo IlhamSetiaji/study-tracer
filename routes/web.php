@@ -47,8 +47,7 @@ Route::middleware('auth')->group(function(){
     });
 
     Route::middleware('is.siswa')->group(function(){
-        Route::prefix('siswa')->group(function(){
-            Route::get('/',[SiswaController::class,'index']);
-        });
+        Route::get('/',[SiswaController::class,'index']);
+        Route::get('/study',[SiswaController::class,'showAllStudies']);
     });
 });

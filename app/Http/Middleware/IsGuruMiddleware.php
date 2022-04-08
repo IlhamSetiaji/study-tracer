@@ -29,7 +29,7 @@ class IsGuruMiddleware
             }
             elseif($user->hasRole('siswa'))
             {
-                return redirect('/siswa')->with('status','Anda bukan user admin');
+                return redirect('/')->with('status','Anda bukan user admin');
             }
         }
         return redirect('/login')->with('status','Anda belum melakukan authentikasi');

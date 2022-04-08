@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\Notifikasi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\Ternary;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -48,7 +50,7 @@ class AuthController extends Controller
                     elseif($user->hasRole('siswa'))
                     {
                         Auth::login($user);
-                        return redirect('/siswa');
+                        return redirect('/');
                     }
                 }
                 return redirect('login')->with('status','User belum aktif');
@@ -90,6 +92,7 @@ class AuthController extends Controller
             'password' => Hash::make(request()->password),
         ]);
         $user->assignRole(request()->roles);
+        Mail::to($user->email)->send(new Notifikasi($user->email, 'Hallo untuk user dengan nama "'.$user->name.'". Selamat akun anda telah dibuat, silahkan untuk konfirmasi ke admin'));
         return redirect('/admin/account')->with('status','Registrasi akun berhasil');
     }
 
@@ -120,6 +123,7 @@ class AuthController extends Controller
         $user = User::find($userID);
 
         $user->status == 'ACTIVE' ? $user->update(['status' => 'INACTIVE']) : $user->update(['status' => 'ACTIVE']);
+        Mail::to($user->email)->send(new Notifikasi($user->email, 'Hallo untuk user dengan nama "'.$user->name.'". Selamat akun anda telah diaktifkan, silahkan untuk login'));
         return redirect('/admin/account')->with('status','Update akun berhasil');
     }
 

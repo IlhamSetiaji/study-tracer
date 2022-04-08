@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Study;
+use App\Mail\Notifikasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class GuruController extends Controller
@@ -40,7 +43,7 @@ class GuruController extends Controller
             return redirect('/guru/study')->withInput()->withErrors($validator);
         }
 
-        Study::create([
+        $study=Study::create([
             'name' => request()->name,
             'university' => request()->university,
             'joined_date' => request()->joined_date,
@@ -49,6 +52,11 @@ class GuruController extends Controller
             'fakultas' => request()->fakultas,
             'jurusan' => request()->jurusan,
         ]);
+        $users = User::role('siswa')->get();
+        foreach($users as $u)
+        {
+            Mail::to($u->email)->send(new Notifikasi($u->email, 'Guru telah membuat study tracer untuk siswa dengan nama "'.$study->name.'" yang berkuliah di "'.$study->university.'"'));
+        }
         return redirect('guru/study')->with('status','Data study berhasil dibuat');
     }
 

@@ -15,6 +15,9 @@
         @elseif (auth()->user()->hasRole('guru'))
         <li class="menu-header">Daftar Study</li>
         <li><a class="nav-link" href="{{ url('/guru/study') }}"><i class="fas fa-user-plus"></i> <span>Daftar Study</span></a></li>
+        @elseif (auth()->user()->hasRole('siswa'))
+        <li class="menu-header">Daftar Study</li>
+        <li><a class="nav-link" href="{{ url('/study') }}"><i class="fas fa-school"></i> <span>Daftar Study</span></a></li>
         @endif
       </ul>
 {{--         <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
